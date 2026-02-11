@@ -4,20 +4,42 @@
 
 sf::RenderWindow window(sf::VideoMode({800, 800}), "DAW");
 
-sf::SoundBuffer buffer;
+sf::SoundBuffer E4Buffer;
+sf::SoundBuffer B4Buffer;
+sf::SoundBuffer Gb4Buffer;
 
 int main() {
 
-  std::vector<int16_t> sound;
+  std::vector<int16_t> E4;
   for (int i = 0; i < 44100; i++) {
-    sound.push_back(i % 100 < 50 ? 5000 : -5000);
+    E4.push_back(i % 266 < 133 ? 10000 : -10000);
   }
 
-  (void)buffer.loadFromSamples(
-      sound.data(), sound.size(), 2, 44100,
+  std::vector<int16_t> B4;
+  for (int i = 0; i < 44100; i++) {
+    B4.push_back(i % 180 < 90 ? 10000 : -10000);
+  }
+
+  std::vector<int16_t> Gb4;
+  for (int i = 0; i < 44100; i++) {
+    Gb4.push_back(i % 240 < 120 ? 10000 : -10000);
+  }
+
+  (void)E4Buffer.loadFromSamples(
+      E4.data(), E4.size(), 2, 30000,
       {sf::SoundChannel::FrontLeft, sf::SoundChannel::FrontRight});
 
-  sf::Sound player(buffer);
+  (void)B4Buffer.loadFromSamples(
+      B4.data(), B4.size(), 2, 30000,
+      {sf::SoundChannel::FrontLeft, sf::SoundChannel::FrontRight});
+
+  (void)Gb4Buffer.loadFromSamples(
+      Gb4.data(), Gb4.size(), 2, 30000,
+      {sf::SoundChannel::FrontLeft, sf::SoundChannel::FrontRight});
+
+  sf::Sound E4Player(E4Buffer);
+  sf::Sound B4Player(B4Buffer);
+  sf::Sound Gb4Player(Gb4Buffer);
 
   while (window.isOpen()) {
     while (const std::optional event = window.pollEvent()) {
@@ -26,7 +48,9 @@ int main() {
       }
       if (const auto *keyPressed = event->getIf<sf::Event::KeyPressed>()) {
         if (keyPressed->code == sf::Keyboard::Key::Space) {
-          player.play();
+          E4Player.play();
+          B4Player.play();
+          Gb4Player.play();
         }
       }
     }
