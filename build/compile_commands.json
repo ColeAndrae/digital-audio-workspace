@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/cole/Desktop/projects/digital-audio-workspace/build",
+  "command": "/usr/bin/c++  -isystem /opt/homebrew/include -std=gnu++17 -arch arm64 -o CMakeFiles/DAW.dir/main.cpp.o -c /Users/cole/Desktop/projects/digital-audio-workspace/main.cpp",
+  "file": "/Users/cole/Desktop/projects/digital-audio-workspace/main.cpp",
+  "output": "CMakeFiles/DAW.dir/main.cpp.o"
+}
+]
