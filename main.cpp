@@ -2,44 +2,39 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-sf::RenderWindow window(sf::VideoMode({800, 800}), "DAW");
+double PI = 3.1415926535;
 
-sf::SoundBuffer E4Buffer;
-sf::SoundBuffer B4Buffer;
-sf::SoundBuffer Gb4Buffer;
+sf::RenderWindow window(sf::VideoMode({1200, 720}), "digital audio workspace");
+
+void drawGrid(std::vector<std::vector<bool>> notes) {
+  sf::RectangleShape rectangle({1200, 1});
+  rectangle.setFillColor(sf::Color::White);
+
+  for (float i = 0; i < 720; i += 20) {
+    rectangle.setPosition({0, i});
+    window.draw(rectangle);
+  }
+
+  rectangle.setSize({1, 720});
+  for (float i = 0; i < 1200; i += 20) {
+    rectangle.setPosition({i, 0});
+    window.draw(rectangle);
+  }
+
+  rectangle.setSize({20, 20});
+  for (float r = 0; r < 60; r++) {
+    for (float c = 0; c < 36; c++) {
+      if (notes[r][c]) {
+        rectangle.setPosition({r * 20, c * 20});
+        window.draw(rectangle);
+      }
+    }
+  }
+}
 
 int main() {
 
-  std::vector<int16_t> E4;
-  for (int i = 0; i < 44100; i++) {
-    E4.push_back(i % 266 < 133 ? 10000 : -10000);
-  }
-
-  std::vector<int16_t> B4;
-  for (int i = 0; i < 44100; i++) {
-    B4.push_back(i % 180 < 90 ? 10000 : -10000);
-  }
-
-  std::vector<int16_t> Gb4;
-  for (int i = 0; i < 44100; i++) {
-    Gb4.push_back(i % 240 < 120 ? 10000 : -10000);
-  }
-
-  (void)E4Buffer.loadFromSamples(
-      E4.data(), E4.size(), 2, 30000,
-      {sf::SoundChannel::FrontLeft, sf::SoundChannel::FrontRight});
-
-  (void)B4Buffer.loadFromSamples(
-      B4.data(), B4.size(), 2, 30000,
-      {sf::SoundChannel::FrontLeft, sf::SoundChannel::FrontRight});
-
-  (void)Gb4Buffer.loadFromSamples(
-      Gb4.data(), Gb4.size(), 2, 30000,
-      {sf::SoundChannel::FrontLeft, sf::SoundChannel::FrontRight});
-
-  sf::Sound E4Player(E4Buffer);
-  sf::Sound B4Player(B4Buffer);
-  sf::Sound Gb4Player(Gb4Buffer);
+  std::vector<std::vector<bool>> notes(60, std::vector<bool>(36, 0));
 
   while (window.isOpen()) {
     while (const std::optional event = window.pollEvent()) {
@@ -47,14 +42,14 @@ int main() {
         window.close();
       }
       if (const auto *keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-        if (keyPressed->code == sf::Keyboard::Key::Space) {
-          E4Player.play();
-          B4Player.play();
-          Gb4Player.play();
-        }
+        // Play sounds
+      }
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        notes[(mousePos.x / 20)][(mousePos.y / 20)] = 1;
       }
     }
-    window.clear();
+    drawGrid(notes);
     window.display();
   }
 
