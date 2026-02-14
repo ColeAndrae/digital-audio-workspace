@@ -4,7 +4,7 @@
 
 double PI = 3.1415926535;
 
-const int TEMPO = 44100;
+const int TEMPO = 44100 / 8;
 const int VOLUME = 5000;
 
 sf::RenderWindow window(sf::VideoMode({1200, 720}), "digital audio workspace");
@@ -27,7 +27,10 @@ void playNotes(std::vector<std::vector<bool>> notes) {
     for (float c = 0; c < 36; c++) {
       if (notes[r][c]) {
         for (int i = 0; i < TEMPO; i++) {
-          sounds[c].push_back(VOLUME * sin(PI * frequencies[c] * i / 44100));
+          // sounds[c].push_back(VOLUME * sin(PI * frequencies[c] * i / 44100));
+          sounds[c].push_back(
+              (i % (int)(frequencies[c] * 2) < (int)frequencies[c]) ? VOLUME
+                                                                    : -VOLUME);
         }
       } else {
         for (int i = 0; i < TEMPO; i++) {
