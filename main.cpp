@@ -4,7 +4,7 @@
 
 double PI = 3.1415926535;
 
-const int TEMPO = 44100 / 8;
+const int TEMPO = 44100 * 4;
 const int VOLUME = 5000;
 
 sf::RenderWindow window(sf::VideoMode({1200, 720}), "digital audio workspace");
@@ -14,23 +14,20 @@ std::vector<sf::SoundBuffer> buffers(36);
 std::vector<sf::Sound> players;
 
 std::vector<float> frequencies = {
-    1661.2, 1568.0, 1480.0, 1397.0, 1318.6, 1244.6, 1174.6, 1108.8, 1046.6,
-    987.8,  932.4,  880.0,  830.6,  766.0,  740.0,  698.5,  659.3,  622.3,
-    587.3,  554.4,  523.3,  493.9,  466.2,  440.0,  415.3,  392.0,  370.0,
-    349.25, 329.65, 311.15, 293.65, 277.2,  261.65, 246.95, 233.1,  220.0};
+    220.0,  233.1,  246.95, 261.65, 277.2,  293.65, 311.15, 329.65, 349.25,
+    370.0,  392.0,  415.3,  440.0,  466.2,  493.9,  523.3,  554.4,  587.3,
+    622.3,  659.3,  698.5,  740.0,  766.0,  830.6,  880.0,  932.4,  987.8,
+    1046.6, 1108.8, 1174.6, 1244.6, 1318.6, 1397.0, 1480.0, 1568.0, 1661.2};
 
 void playNotes(std::vector<std::vector<bool>> notes) {
 
   std::vector<std::vector<int16_t>> sounds(36, std::vector<int16_t>());
-
-  for (float r = 0; r < 60; r++) {
+  for (float r = 0; r < 8; r++) {
     for (float c = 0; c < 36; c++) {
       if (notes[r][c]) {
         for (int i = 0; i < TEMPO; i++) {
           // sounds[c].push_back(VOLUME * sin(PI * frequencies[c] * i / 44100));
-          sounds[c].push_back(
-              (i % (int)(frequencies[c] * 2) < (int)frequencies[c]) ? VOLUME
-                                                                    : -VOLUME);
+          sounds[c].push_back(VOLUME * (i % (int)frequencies[c]));
         }
       } else {
         for (int i = 0; i < TEMPO; i++) {
